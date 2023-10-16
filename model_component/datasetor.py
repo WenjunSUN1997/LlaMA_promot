@@ -3,7 +3,7 @@ from transformers import AutoTokenizer
 from tool.read_data import read_data
 import torch
 
-class datasetor(Dataset):
+class Datasetor(Dataset):
     def __init__(self,
                  csv,
                  window=10,
@@ -68,7 +68,7 @@ class datasetor(Dataset):
 if __name__ == "__main__":
     file_path_list = ['../data/HIPE-2022-data/data/v2.1/ajmc/en/HIPE-2022-v2.1-ajmc-dev-en.tsv']
     data = read_data(file_path_list=file_path_list)
-    datasetor_obj = datasetor(data['file_list'][0],
+    datasetor_obj = Datasetor(data['file_list'][0],
                               label_index_dict=data['label_index_dict'],
                               index_label_dict=data['index_label_dict']
                               )
