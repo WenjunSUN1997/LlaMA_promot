@@ -6,15 +6,14 @@ class BaselineLllama(torch.nn.Module):
     def __init__(self,
                  model_name,
                  num_label,
-                 dorp_out,
-                 label_num,
+                 drop_out,
                  sim_dim):
         super(BaselineLllama, self).__init__()
         self.model = AutoModel.from_pretrained(model_name)
         self.crf = torchcrf.CRF(num_tags=num_label,
                                 batch_first=True)
         self.linear = torch.nn.Linear(in_features=sim_dim,
-                                      out_features=label_num)
+                                      out_features=num_label)
 
     def get_first_token_index(self, data):
         word_ids = data['word_ids']
