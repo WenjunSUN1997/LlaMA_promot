@@ -1,8 +1,6 @@
 import pandas as pd
 import csv
 
-csv.field_size_limit(500*1024*1024)
-
 def read_data(file_path_list:list):
     file_list = []
     label_list = []

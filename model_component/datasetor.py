@@ -17,8 +17,7 @@ class Datasetor(Dataset):
         self.label = [x for x in csv['label']]
         self.window = window
         self.step = step
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name,
-                                                       pad_token='<pad>')
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.max_token_num = max_token_num
         self.label_index_dict = label_index_dict
         self.index_label_dict = index_label_dict
@@ -49,7 +48,7 @@ class Datasetor(Dataset):
 
     def __getitem__(self, item):
         label = torch.tensor(self.label_chunked[item]).to(self.device)
-        output_tokenizer = self.tokenizer(self.text_chunked[item],
+        output_tokenizer = self.tokenizer([self.text_chunked[item]],
                                           is_split_into_words=True,
                                           padding="max_length",
                                           max_length=self.max_token_num,
@@ -59,11 +58,11 @@ class Datasetor(Dataset):
             output_tokenizer[key] = value.to(self.device)
 
         word_ids = torch.tensor([-100 if element is None else element
-                    for element in output_tokenizer.word_ids()]).to(self.device)
+                                 for element in output_tokenizer.word_ids()]).to(self.device)
         return {'label': label,
                 'word_ids': word_ids,
-                'input_ids': output_tokenizer['input_ids'].squeeze(1),
-                'attention_mask': output_tokenizer['attention_mask'].squeeze(1)}
+                'input_ids': output_tokenizer['input_ids'].squeeze(0),
+                'attention_mask': output_tokenizer['attention_mask'].squeeze(0)}
 
 if __name__ == "__main__":
     file_path_list = ['../data/HIPE-2022-data/data/v2.1/ajmc/en/HIPE-2022-v2.1-ajmc-dev-en.tsv']
