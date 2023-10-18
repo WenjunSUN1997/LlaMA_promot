@@ -62,8 +62,8 @@ class Datasetor(Dataset):
                     for element in output_tokenizer.word_ids()]).to(self.device)
         return {'label': label,
                 'word_ids': word_ids,
-                'input_ids': output_tokenizer['input_ids'],
-                'attention_mask': output_tokenizer['attention_mask']}
+                'input_ids': output_tokenizer['input_ids'].squeeze(1),
+                'attention_mask': output_tokenizer['attention_mask'].squeeze(1)}
 
 if __name__ == "__main__":
     file_path_list = ['../data/HIPE-2022-data/data/v2.1/ajmc/en/HIPE-2022-v2.1-ajmc-dev-en.tsv']

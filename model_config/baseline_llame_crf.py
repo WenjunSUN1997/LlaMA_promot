@@ -32,9 +32,9 @@ class BaselineLllama(torch.nn.Module):
         return result
 
     def get_embedding_first_token(self, data):
+        first_token_index = self.get_first_token_index(data)
         all_embedding = self.model(input_ids=data['input_ids'],
                                    attention_mask=data['attention_mask'])
-        first_token_index = self.get_first_token_index(data)
         first_token_embedding = all_embedding[first_token_index]
         return first_token_embedding
 

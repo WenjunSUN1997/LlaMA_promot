@@ -1,4 +1,7 @@
 import pandas as pd
+import csv
+
+csv.field_size_limit(500*1024*1024)
 
 def read_data(file_path_list:list):
     file_list = []
@@ -7,14 +10,11 @@ def read_data(file_path_list:list):
         file = pd.read_csv(file_path,
                            sep='\t',
                            engine='python',
-                           quotechar='"',
-                           error_bad_lines=False)
-        row_note = []
-        for index in range(len(file)):
-            if '#' == file['TOKEN'][index][0]:
-                row_note.append(index)
-
-        file = file.drop(row_note)
+                           encoding='utf8',
+                           quoting=3,
+                           skip_blank_lines=False)
+        file = file[~file['TOKEN'].astype(str).str.startswith('#')]
+        file = file[~file['TOKEN'].astype(str).str.startswith('\t')]
         file = file.reset_index(drop=True)
         file_list.append(file)
         for data in file['NE-COARSE-LIT']:
