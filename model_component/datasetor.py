@@ -34,9 +34,9 @@ class Datasetor(Dataset):
             text_chunk = self.text[i:i + window]
             label_chunk = self.label[i:i + window]
             if len(text_chunk) < window:
-                text_chunk.extend([padding_value] * (window - len(text_chunk)))
-                label_chunk.extend([self.label_index_dict['O']]
-                                   * (window - len(text_chunk)))
+                extend_length = window - len(text_chunk)
+                text_chunk.extend([padding_value] * extend_length)
+                label_chunk.extend([self.label_index_dict['O']] * extend_length)
 
             text_result.append(text_chunk)
             label_result.append(label_chunk)
@@ -62,10 +62,11 @@ class Datasetor(Dataset):
         return {'label': label,
                 'word_ids': word_ids,
                 'input_ids': output_tokenizer['input_ids'].squeeze(0),
-                'attention_mask': output_tokenizer['attention_mask'].squeeze(0)}
+                'attention_mask': output_tokenizer['attention_mask'].squeeze(0)
+                }
 
 if __name__ == "__main__":
-    file_path_list = ['../data/HIPE-2022-data/data/v2.1/ajmc/en/HIPE-2022-v2.1-ajmc-dev-en.tsv']
+    file_path_list = ['../data/HIPE-2022-data/data/v2.1/newseye/de/HIPE-2022-v2.1-newseye-dev-de.tsv']
     data = read_data(file_path_list=file_path_list)
     datasetor_obj = Datasetor(data['file_list'][0],
                               label_index_dict=data['label_index_dict'],
