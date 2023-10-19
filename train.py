@@ -23,6 +23,7 @@ def train(lang='newseye_de',
     best_test_f1 = 0
     best_dev_f1 = 0
     best_dev_f1_when_test = 0
+    best_test_f1_when_dev = 0
     best_dev_epoch = 0
     best_test_epoch = 0
     dataloader_train, _, label_index_dict, index_label_dict = get_dataloader(batch_size=batch_size,
@@ -100,6 +101,7 @@ def train(lang='newseye_de',
             best_dev_loss = dev_loss
             best_dev_epoch = epoch_index
             best_dev_f1 = dev_f1
+            best_test_f1_when_dev = test_f1
 
         if test_f1 > best_test_f1:
             best_test_f1 = test_f1
@@ -112,7 +114,7 @@ def train(lang='newseye_de',
         print('current dev f1: ' + str(dev_f1) + '\n')
         print('current test loss: ' + str(test_loss) + '\n')
         print('current test f1: ' + str(test_f1) + '\n')
-        print('best dev loss: ' + str(best_dev_loss) + '|| test_f1: ' + str(test_f1) +
+        print('best dev loss: ' + str(best_dev_loss) + '|| test_f1: ' + str(best_test_f1_when_dev) +
               'dev_f1: ' + str(best_dev_f1) + '|| epoch: ' + str(best_dev_epoch) + '\n')
         print('best test_f1: ' + str(best_test_f1) + '|| dev_f1: ' + str(best_dev_f1_when_test) +
               '|| epoch: ' + str(best_test_epoch) + '\n')
