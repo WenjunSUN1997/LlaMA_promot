@@ -167,8 +167,8 @@ def evaluation_wrapper(
 def get_results(
     f_ref: str,
     f_pred: str,
-    task: str,
-    edition: str,
+    task: str = 'nerc_coarse',
+    edition: str = 'HIPE-2022',
     skip_check: bool = True,
     glueing_cols: str = None,
     n_best: list = [1],

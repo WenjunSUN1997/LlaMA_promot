@@ -1,21 +1,21 @@
 System	Evaluation	Label	P	R	F1	F1_std	P_std	R_std	TP	FP	FN
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	ALL	0	0.0	0				0	0	540
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	HUMANPROD	0	0.0	0				0	0	4
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	LOC	0	0.0	0				0	0	263
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	ORG	0	0.0	0				0	0	124
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	PER	0	0.0	0				0	0	149
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	ALL	0	0.0	0				0	0	540
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	HUMANPROD	0	0.0	0				0	0	4
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	LOC	0	0.0	0				0	0	263
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	ORG	0	0.0	0				0	0	124
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	PER	0	0.0	0				0	0	149
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	ALL		0.0				0.0			
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	HUMANPROD		0.0				0.0			
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	LOC		0.0				0.0			
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	ORG		0.0				0.0			
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	PER		0.0				0.0			
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	ALL		0.0				0.0			
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	HUMANPROD		0.0				0.0			
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	LOC		0.0				0.0			
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	ORG		0.0				0.0			
-record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	PER		0.0				0.0			
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	ALL	0.003	0.215	0.006				116	36068	424
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	HUMANPROD	0.0	0.0	0				0	7107	4
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	LOC	0.006	0.236	0.012				62	10315	201
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	ORG	0.003	0.258	0.006				32	10683	92
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	PER	0.003	0.148	0.005				22	7963	127
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	ALL	0.002	0.13	0.004				70	36114	470
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	HUMANPROD	0.0	0.0	0				0	7107	4
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	LOC	0.005	0.198	0.01				52	10325	211
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	ORG	0.001	0.097	0.002				12	10703	112
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	PER	0.001	0.04	0.001				6	7979	143
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	ALL	0.003	0.215	0.006	0.0	0.0	0.0			
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	HUMANPROD	0.0	0.0	0.0	0.0	0.0	0.0			
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	LOC	0.006	0.236	0.012	0.0	0.0	0.0			
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	ORG	0.003	0.258	0.006	0.0	0.0	0.0			
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	PER	0.003	0.148	0.005	0.0	0.0	0.0			
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	ALL	0.002	0.13	0.004	0.0	0.0	0.0			
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	HUMANPROD	0.0	0.0	0.0	0.0	0.0	0.0			
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	LOC	0.005	0.198	0.01	0.0	0.0	0.0			
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	ORG	0.001	0.097	0.002	0.0	0.0	0.0			
+record/newseye_de/0\dev.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	PER	0.001	0.04	0.001	0.0	0.0	0.0			

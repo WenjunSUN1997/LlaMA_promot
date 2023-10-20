@@ -1,0 +1,21 @@
+System	Evaluation	Label	P	R	F1	F1_std	P_std	R_std	TP	FP	FN
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	ALL	0.007	0.247	0.013				594	88415	1808
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	HUMANPROD	0.0	0.4	0.001				6	16873	9
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	LOC	0.011	0.226	0.02				276	25512	946
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	ORG	0.003	0.246	0.007				87	25810	267
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-micro-fuzzy-TIME-ALL-LED-ALL	PER	0.011	0.277	0.021				225	20220	586
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	ALL	0.004	0.138	0.007				332	88677	2070
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	HUMANPROD	0.0	0.133	0.0				2	16877	13
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	LOC	0.008	0.166	0.015				203	25585	1019
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	ORG	0.001	0.096	0.003				34	25863	320
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-micro-strict-TIME-ALL-LED-ALL	PER	0.005	0.115	0.009				93	20352	718
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	ALL	0.007	0.247	0.013	0.0	0.0	0.0			
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	HUMANPROD	0.0	0.4	0.001	0.0	0.0	0.0			
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	LOC	0.011	0.226	0.02	0.0	0.0	0.0			
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	ORG	0.003	0.246	0.007	0.0	0.0	0.0			
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-macro_doc-fuzzy-TIME-ALL-LED-ALL	PER	0.011	0.277	0.021	0.0	0.0	0.0			
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	ALL	0.004	0.138	0.007	0.0	0.0	0.0			
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	HUMANPROD	0.0	0.133	0.0	0.0	0.0	0.0			
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	LOC	0.008	0.166	0.015	0.0	0.0	0.0			
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	ORG	0.001	0.096	0.003	0.0	0.0	0.0			
+../record/newseye_de/0/test.tsv	NE-COARSE-LIT-macro_doc-strict-TIME-ALL-LED-ALL	PER	0.005	0.115	0.009	0.0	0.0	0.0			

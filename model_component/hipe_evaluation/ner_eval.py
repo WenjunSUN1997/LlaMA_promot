@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # coding: utf-8
+from tqdm import tqdm
 
 """
 The official evaluation module for the CLEF-HIPE-2020 shared task.
@@ -433,7 +434,8 @@ class Evaluator:
         ]
 
         # go through each predicted named-entity
-        for pred in pred_named_entities:
+        print('check pred')
+        for pred in tqdm(pred_named_entities):
             found_overlap = False
 
             # Check each of the potential scenarios in turn. See
@@ -593,7 +595,8 @@ class Evaluator:
 
         # Scenario III: Entity was missed entirely.
 
-        for true in true_named_entities:
+        print('check truth')
+        for true in tqdm(true_named_entities):
             if true not in true_which_overlapped_with_pred:
                 # overall results
                 evaluation["strict"]["missed"] += 1

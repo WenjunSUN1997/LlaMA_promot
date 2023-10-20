@@ -74,7 +74,7 @@ def train(lang='newseye_de',
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            # break
+            break
 
         print('loss:', sum(loss_list) / len(loss_list))
         performance_dev = validate(model=model,
@@ -108,18 +108,57 @@ def train(lang='newseye_de',
             best_dev_f1_when_test = dev_f1
             best_test_epoch = epoch_index
 
-        print('epoch: ' + str(epoch_index) + '\n')
-        print('current train loss: ' + str(train_loss) + '\n')
-        print('current dev loss: ' + str(dev_loss) + '\n')
-        print('current dev f1: ' + str(dev_f1) + '\n')
-        print('current test loss: ' + str(test_loss) + '\n')
-        print('current test f1: ' + str(test_f1) + '\n')
-        print('best dev loss: ' + str(best_dev_loss) + '|| test_f1: ' + str(best_test_f1_when_dev) +
-              'dev_f1: ' + str(best_dev_f1) + '|| epoch: ' + str(best_dev_epoch) + '\n')
-        print('best test_f1: ' + str(best_test_f1) + '|| dev_f1: ' + str(best_dev_f1_when_test) +
-              '|| epoch: ' + str(best_test_epoch) + '\n')
-        print('*******************************************************\n')
-
+        log = 'epoch: ' + str(epoch_index) + '\n' \
+              + 'current train loss: ' + str(train_loss) + '\n' \
+              + 'current dev loss: ' + str(dev_loss) + '\n' \
+              + 'current dev f1: ' + str(dev_f1) + '\n' \
+              + 'current test loss: ' + str(test_loss) + '\n' \
+              + 'current test f1: ' + str(test_f1) + '\n' \
+              + 'best dev loss: ' + str(best_dev_loss) \
+              + '|| test_f1: ' + str(best_test_f1_when_dev) \
+              + 'dev_f1: ' + str(best_dev_f1) \
+              + '|| epoch: ' + str(best_dev_epoch) + '\n' \
+              + 'best test_f1: ' + str(best_test_f1) \
+              + '|| dev_f1: ' + str(best_dev_f1_when_test) \
+              + '|| epoch: ' + str(best_test_epoch) + '\n' \
+              + '*******************************************************\n'
+        print(log)
+        with open('record/' + lang + '/log.txt', 'w',encoding='utf-8') as file:
+            file.write(log)
 
 if __name__ == "__main__":
-    train()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--lang", default='newseye_de')
+    parser.add_argument("--model_name", default='bert-base-uncased')
+    parser.add_argument("--num_label", default=9, type=int)
+    parser.add_argument("--window", default=20, type=int)
+    parser.add_argument("--step", default=10, type=int)
+    parser.add_argument("--max_token_num", default=512, type=int)
+    parser.add_argument("--sim_dim", default=768, type=int)
+    parser.add_argument("--batch_size", default=4, type=int)
+    parser.add_argument("--dropout", default=0.3, type=float)
+    parser.add_argument("--lr", default=2e-5, type=float)
+    parser.add_argument("--device", default='cuda:0')
+    args = parser.parse_args()
+    model_name = args.model_name
+    lang = args.lang
+    num_label = args.num_label
+    window = args.window
+    step = args.step
+    max_token_num = args.max_token_num
+    sim_dim = args.sim_dim
+    batch_size = args.batch_size
+    dropout = args.dropout
+    lr = args.lr
+    device = args.device
+    train(lang=lang,
+          model_name=model_name,
+          num_label=num_label,
+          window=window,
+          step=step,
+          max_token_num=max_token_num,
+          sim_dim=sim_dim,
+          batch_size=batch_size,
+          drop_out=dropout,
+          lr=lr,
+          device=device)

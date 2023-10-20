@@ -36,8 +36,6 @@ def validate(dataloader,
     predict_df.to_csv(restore_path_specific+goal+'.tsv', sep='\t', index=False, encoding='utf8')
     get_results(f_ref=restore_path_specific+'truth.tsv',
                 f_pred=restore_path_specific+goal+'.tsv',
-                task='nerc_coarse',
-                edition='HIPE-2022',
                 outdir=restore_path_specific)
     result = pd.read_csv(restore_path_specific + goal + '_nerc_coarse.tsv', sep='\t')
     fuzzy_f1 = result['F1'][0]
@@ -46,6 +44,6 @@ def validate(dataloader,
             'fuzzy_f1': fuzzy_f1}
 
 if __name__ == "__main__":
-    os.system('python ../HIPE-scorer/clef_evaluation.py --ref result/truth.tsv '
-              + '--pred result/_dev.tsv --skip-check --task nerc_coarse '
-              +  '--hipe_edition hipe-2022 --outdir result/')
+    get_results(f_ref='../record/newseye_de/0/truth.tsv',
+                f_pred='../record/newseye_de/0/test.tsv',
+                outdir='../record/newseye_de/0/')
