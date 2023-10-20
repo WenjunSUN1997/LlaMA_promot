@@ -19,6 +19,9 @@ class Datasetor(Dataset):
         self.window = window
         self.step = step
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        if 'llama' in model_name.lower():
+            self.tokenizer.add_special_tokens({'pad_token': '<pad>'})
+            
         self.max_token_num = max_token_num
         self.label_index_dict = label_index_dict
         self.index_label_dict = index_label_dict
