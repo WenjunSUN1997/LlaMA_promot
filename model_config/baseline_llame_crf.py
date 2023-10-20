@@ -43,12 +43,35 @@ class BaselineLllama(torch.nn.Module):
     def get_embedding_first_token(self, data):
         first_token_index = self.get_first_token_index(data)
         all_embedding = self.back_bone_model(input_ids=data['input_ids'],
-                                   attention_mask=data['attention_mask'])['last_hidden_state']
-        first_token_embedding = self.get_first_token_embedding(all_embedding,
+                                             attention_mask=data['attention_mask'])
+        first_token_embedding = self.get_first_token_embedding(all_embedding['last_hidden_state'],
                                                                first_token_index)
         return first_token_embedding
 
-    def forward(self, data):
+    def forward_sentence(self, data):
+        path_all = []
+        loss_all = []
+        batch_size = data['word_ids'].shape[0]
+        first_token_index = self.get_first_token_index(data)
+        for batch_index in range(batch_size):
+            label = data['label'][batch_index][data['label'][batch_index] != -1]
+            input_ids = data['input_ids'][batch_index].unsqueeze(0)
+            attention_mask = data['attention_mask'][batch_index].unsqueeze(0)
+            all_token_embedding = self.back_bone_model(input_ids=input_ids,
+                                                       attention_mask=attention_mask)['last_hidden_state']
+            first_token_embedding = all_token_embedding[:, first_token_index[batch_index], :]
+            ouput_linear = self.drop_out(self.linear(first_token_embedding))
+            output_softmax = torch.softmax(ouput_linear, dim=-1)
+            crf_path = self.crf.decode(output_softmax)
+            loss = -1 * self.crf(output_softmax,
+                                 label.unsqueeze(0))
+            path_all.append(crf_path[0])
+            loss_all.append(loss)
+
+        return {'path': path_all,
+                'loss': sum(loss_all)}
+
+    def forward_token(self, data):
         embedding_first_token = self.get_embedding_first_token(data)
         ouput_linear = self.drop_out(self.linear(embedding_first_token))
         output_softmax = torch.softmax(ouput_linear, dim=-1)
@@ -57,5 +80,9 @@ class BaselineLllama(torch.nn.Module):
                         data['label'])
         return {'path': crf_path,
                 'loss': loss * -1}
+
+    def forward(self, data):
+        return self.forward_sentence(data)
+
 
 

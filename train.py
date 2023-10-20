@@ -16,7 +16,8 @@ def train(lang='newseye_de',
           sim_dim=768,
           batch_size=4,
           drop_out=0.3,
-          lr=2e-5):
+          lr=2e-5,
+          max_word_num=100):
     epoch_num = 1000
     lr = lr
     best_dev_loss = 10000000
@@ -33,7 +34,8 @@ def train(lang='newseye_de',
                                                                              window=window,
                                                                              step=step,
                                                                              max_token_num=max_token_num,
-                                                                             device=device)
+                                                                             device=device,
+                                                                             max_word_num=max_word_num)
     dataloader_dev, truth_dev, _, _ = get_dataloader(batch_size=batch_size,
                                                      lang=lang,
                                                      goal='dev',
@@ -41,7 +43,8 @@ def train(lang='newseye_de',
                                                      window=window,
                                                      step=window,
                                                      max_token_num=max_token_num,
-                                                     device=device)
+                                                     device=device,
+                                                     max_word_num=max_word_num)
     dataloader_test, truth_test, _, _ = get_dataloader(batch_size=batch_size,
                                                        lang=lang,
                                                        goal='test',
@@ -49,7 +52,8 @@ def train(lang='newseye_de',
                                                        window=window,
                                                        step=window,
                                                        max_token_num=max_token_num,
-                                                       device=device)
+                                                       device=device,
+                                                       max_word_num=max_word_num)
     model = BaselineLllama(model_name=model_name,
                            drop_out=drop_out,
                            num_label=num_label,
@@ -74,7 +78,7 @@ def train(lang='newseye_de',
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            # break
+            break
 
         print('loss:', sum(loss_list) / len(loss_list))
         performance_dev = validate(model=model,
@@ -132,6 +136,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_name", default='bert-base-uncased')
     parser.add_argument("--num_label", default=9, type=int)
     parser.add_argument("--window", default=20, type=int)
+    parser.add_argument("--max_word_num", default=100, type=int)
     parser.add_argument("--step", default=10, type=int)
     parser.add_argument("--max_token_num", default=512, type=int)
     parser.add_argument("--sim_dim", default=768, type=int)
@@ -144,6 +149,7 @@ if __name__ == "__main__":
     lang = args.lang
     num_label = args.num_label
     window = args.window
+    max_word_num = args.max_word_num
     step = args.step
     max_token_num = args.max_token_num
     sim_dim = args.sim_dim
@@ -161,4 +167,5 @@ if __name__ == "__main__":
           batch_size=batch_size,
           drop_out=dropout,
           lr=lr,
-          device=device)
+          device=device,
+          max_word_num=max_word_num)
