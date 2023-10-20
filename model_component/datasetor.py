@@ -15,6 +15,7 @@ class Datasetor(Dataset):
                  device='cuda:0'):
         self.text = [x for x in csv['TOKEN']]
         self.label = [x for x in csv['label']]
+        self.csv = csv
         self.window = window
         self.step = step
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)

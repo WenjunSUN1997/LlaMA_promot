@@ -74,7 +74,7 @@ def train(lang='newseye_de',
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            break
+            # break
 
         print('loss:', sum(loss_list) / len(loss_list))
         performance_dev = validate(model=model,
