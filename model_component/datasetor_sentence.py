@@ -29,7 +29,6 @@ class DatasetorSentence(Datasetor):
 
     def split_list(self, input_list, m):
         result = []
-
         for i in range(0, len(input_list), m):
             small_list = input_list[i:i + m]
             result.append(small_list)
@@ -59,6 +58,8 @@ class DatasetorSentence(Datasetor):
                 result_text_unit = []
                 result_label_unit = []
 
+        result_text.append(result_text_unit)
+        result_label.append(result_label_unit)
         return (result_text, result_label)
 
     def __len__(self):
@@ -67,7 +68,6 @@ class DatasetorSentence(Datasetor):
     def __getitem__(self, item):
         label = self.label_sentence[item]
         label_padded = label + [-1] * (self.max_word_num - len(label))
-
         label_attention = [1] * len(label) + [0] * (self.max_word_num - len(label))
         output_tokenizer = self.tokenizer([self.text_sentence[item]],
                                           is_split_into_words=True,
@@ -87,13 +87,27 @@ class DatasetorSentence(Datasetor):
                 'label': torch.tensor(label_padded).to(self.device)
                 }
 
+def check(datasetor:DatasetorSentence):
+    length = [0]
+    a = []
+    for x in datasetor.text_sentence:
+        a += x
+    b = [x for x in datasetor.csv['TOKEN']]
+    for index in range(len(a)):
+        if b[index] != a[index]:
+            print(index)
+
+    return b
+
 if __name__ == "__main__":
-    file_path_list = ['../data/HIPE-2022-data/data/v2.1/newseye/de/HIPE-2022-v2.1-newseye-train-de.tsv']
+    file_path_list = ['../data/HIPE-2022-data/data/v2.1/newseye/de/HIPE-2022-v2.1-newseye-dev-de.tsv']
     data = read_data(file_path_list=file_path_list)
     datasetor_obj = DatasetorSentence(data['file_list'][0],
                                       label_index_dict=data['label_index_dict'],
-                                      index_label_dict=data['index_label_dict']
+                                      index_label_dict=data['index_label_dict'],
+                                      max_word_num=1
                                       )
+    check(datasetor_obj)
     dataloader = DataLoader(datasetor_obj,
                             batch_size=2,
                             shuffle=False)
