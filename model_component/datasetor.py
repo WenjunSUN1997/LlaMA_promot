@@ -22,6 +22,7 @@ class Datasetor(Dataset):
             self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         except:
             self.tokenizer = LlamaTokenizerFast.from_pretrained(model_name)
+        if not self.tokenizer.pad_token:
             self.tokenizer.pad_token = self.tokenizer.eos_token
 
         self.max_token_num = max_token_num
