@@ -139,7 +139,7 @@ if __name__ == "__main__":
     parser.add_argument("--max_word_num", default=100, type=int)
     parser.add_argument("--step", default=10, type=int)
     parser.add_argument("--max_token_num", default=512, type=int)
-    parser.add_argument("--sim_dim", default=768, type=int)
+    parser.add_argument("--sim_dim", default=4096, type=int)
     parser.add_argument("--batch_size", default=4, type=int)
     parser.add_argument("--dropout", default=0.3, type=float)
     parser.add_argument("--lr", default=2e-5, type=float)
