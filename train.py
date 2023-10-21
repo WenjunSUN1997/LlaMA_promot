@@ -133,7 +133,7 @@ def train(lang='newseye_de',
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--lang", default='newseye_de')
-    parser.add_argument("--model_name", default='meta-llama/Llama-2-7b')
+    parser.add_argument("--model_name", default='mistralai/Mistral-7B-v0.1')
     parser.add_argument("--num_label", default=9, type=int)
     parser.add_argument("--window", default=20, type=int)
     parser.add_argument("--max_word_num", default=100, type=int)
