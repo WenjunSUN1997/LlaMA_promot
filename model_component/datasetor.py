@@ -1,5 +1,5 @@
 from torch.utils.data import Dataset
-from transformers import AutoTokenizer
+from transformers import AutoTokenizer, LlamaTokenizerFast
 from tool.read_data import read_data
 import torch
 
@@ -18,10 +18,12 @@ class Datasetor(Dataset):
         self.csv = csv
         self.window = window
         self.step = step
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        if 'llama' in model_name.lower():
-            self.tokenizer.add_special_tokens({'pad_token': '<pad>'})
-            
+        try:
+            self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        except:
+            self.tokenizer = LlamaTokenizerFast.from_pretrained(model_name)
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+
         self.max_token_num = max_token_num
         self.label_index_dict = label_index_dict
         self.index_label_dict = index_label_dict
