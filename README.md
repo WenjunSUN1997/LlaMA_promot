@@ -1,5 +1,7 @@
 for crf library, you should run: pip install pytorch-crf
 
+for evaluation, maybe you also run: pip install docopt and smart_open
+
 --lang: newseye_[de, fr, fi, sv]
 
 --model_name: the name of language model
