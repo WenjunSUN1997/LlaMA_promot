@@ -96,9 +96,9 @@ def train(lang='newseye_de',
                                     lang=lang,
                                     epoch_num=epoch_index)
         dev_loss = performance_dev['loss']
-        dev_f1 = performance_dev['f1']
+        dev_f1 = performance_dev['fuzzy_f1']
         test_loss = performance_test['loss']
-        test_f1 = performance_test['f1']
+        test_f1 = performance_test['fuzzy_f1']
         train_loss = sum(loss_list) / len(loss_list)
         scheduler.step(dev_loss)
         if dev_loss < best_dev_loss:

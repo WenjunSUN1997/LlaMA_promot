@@ -59,6 +59,7 @@ class BaselineLllama(torch.nn.Module):
             attention_mask = data['attention_mask'][batch_index].unsqueeze(0)
             all_token_embedding = self.back_bone_model(input_ids=input_ids,
                                                        attention_mask=attention_mask)['last_hidden_state']
+            assert len(label) == len(first_token_index[batch_index])
             first_token_embedding = all_token_embedding[:, first_token_index[batch_index], :]
             ouput_linear = self.drop_out(self.linear(first_token_embedding))
             output_softmax = torch.softmax(ouput_linear, dim=-1)
