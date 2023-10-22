@@ -28,7 +28,7 @@ def validate(dataloader,
     if not os.path.exists(restore_path_general):
         os.mkdir(restore_path_general)
 
-    restore_path_specific = restore_path_general + str(epoch_num) + '\\'
+    restore_path_specific = restore_path_general + str(epoch_num) + '/'
     if not os.path.exists(restore_path_specific):
         os.mkdir(restore_path_specific)
 

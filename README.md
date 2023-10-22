@@ -8,7 +8,7 @@
 
 --step:  no need to set, will remove
 
---max_word_num: the max number of words in one sentence
+--max_word_num: no need to set, will remove
 
 --max_token_num: the number of subtokens for tokenizer
 
