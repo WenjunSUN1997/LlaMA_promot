@@ -6,6 +6,8 @@ from tqdm import tqdm
 import argparse
 from model_config.baseline_llame_crf import BaselineLllama
 
+torch.manual_seed(3407)
+
 def train(lang='newseye_de',
           model_name='bert-base-uncased',
           num_label=9,
