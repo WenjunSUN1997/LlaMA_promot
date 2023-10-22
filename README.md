@@ -1,3 +1,5 @@
+for crf library, you should run: pip install pytorch-crf
+
 --lang: newseye_[de, fr, fi, sv]
 
 --model_name: the name of language model
