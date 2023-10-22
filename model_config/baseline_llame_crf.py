@@ -40,14 +40,6 @@ class BaselineLllama(torch.nn.Module):
 
         return torch.stack(result)
 
-    def get_embedding_first_token(self, data):
-        first_token_index = self.get_first_token_index(data)
-        all_embedding = self.back_bone_model(input_ids=data['input_ids'],
-                                             attention_mask=data['attention_mask'])
-        first_token_embedding = self.get_first_token_embedding(all_embedding['last_hidden_state'],
-                                                               first_token_index)
-        return first_token_embedding
-
     def forward_sentence(self, data):
         path_all = []
         loss_all = []
@@ -61,7 +53,7 @@ class BaselineLllama(torch.nn.Module):
                                                        attention_mask=attention_mask)['last_hidden_state']
             assert len(label) == len(first_token_index[batch_index])
             first_token_embedding = all_token_embedding[:, first_token_index[batch_index], :]
-            ouput_linear = self.drop_out(self.linear(first_token_embedding))
+            ouput_linear = self.linear(self.drop_out(first_token_embedding))
             output_softmax = torch.softmax(ouput_linear, dim=-1)
             crf_path = self.crf.decode(output_softmax)
             loss = -1 * self.crf(output_softmax,
@@ -73,7 +65,11 @@ class BaselineLllama(torch.nn.Module):
                 'loss': sum(loss_all)}
 
     def forward_token(self, data):
-        embedding_first_token = self.get_embedding_first_token(data)
+        first_token_index = self.get_first_token_index(data)
+        all_embedding = self.back_bone_model(input_ids=data['input_ids'],
+                                             attention_mask=data['attention_mask'])
+        embedding_first_token = self.get_first_token_embedding(all_embedding['last_hidden_state'],
+                                                               first_token_index)
         ouput_linear = self.drop_out(self.linear(embedding_first_token))
         output_softmax = torch.softmax(ouput_linear, dim=-1)
         crf_path = self.crf.decode(output_softmax)
