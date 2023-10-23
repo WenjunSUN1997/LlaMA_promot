@@ -10,7 +10,7 @@ class DatasetorSentence(Datasetor):
                  csv,
                  window=10,
                  step=9,
-                 model_name='bert-base-uncased',
+                 model_name='mistralai/Mistral-7B-v0.1',
                  max_token_num=512,
                  label_index_dict=None,
                  index_label_dict=None,
@@ -118,7 +118,7 @@ def check(datasetor:DatasetorSentence):
     return b
 
 if __name__ == "__main__":
-    file_path_list = ['../data/HIPE-2022-data/data/v2.1/newseye/de/HIPE-2022-v2.1-newseye-train-de.tsv']
+    file_path_list = ['../data/HIPE-2022-data/data/v2.1/newseye/de/HIPE-2022-v2.1-newseye-dev-de.tsv']
     data = read_data(file_path_list=file_path_list)
     datasetor_obj = DatasetorSentence(data['file_list'][0],
                                       label_index_dict=data['label_index_dict'],
