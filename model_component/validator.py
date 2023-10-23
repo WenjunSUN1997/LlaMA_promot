@@ -26,8 +26,8 @@ def validate(dataloader,
     # label_result = ['O'] * len(truth_df)
     predict_df['NE-COARSE-LIT'] = label_result
     if not os.path.exists('record/' + model_name.split('/')[-1] + '/'):
-        os.mkdir('record/' + model_name + '/')
-    restore_path_general = 'record/' + model_name + '/' + lang + '/'
+        os.mkdir('record/' + model_name.split('/')[-1] + '/')
+    restore_path_general = 'record/' + model_name.split('/')[-1] + '/' + lang + '/'
     if not os.path.exists(restore_path_general):
         os.mkdir(restore_path_general)
 
