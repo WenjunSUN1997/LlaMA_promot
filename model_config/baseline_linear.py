@@ -15,7 +15,7 @@ class BaselineLinear(BaselineLllama):
                                          sim_dim)
         self.loss_func = loss_func
 
-    def forward_sentence(self, data):
+    def forward_sentence(self, data, goal):
         path_all = []
         loss_all = []
         batch_size = data['word_ids'].shape[0]
@@ -28,7 +28,11 @@ class BaselineLinear(BaselineLllama):
                                                        attention_mask=attention_mask)['last_hidden_state']
             assert len(label) == len(first_token_index[batch_index])
             first_token_embedding = all_token_embedding[:, first_token_index[batch_index], :]
-            ouput_linear = self.linear(self.drop_out(first_token_embedding))
+            if goal == 'train':
+                ouput_linear = self.linear(self.drop_out(first_token_embedding))
+            else:
+                ouput_linear = self.linear(first_token_embedding)
+
             output_softmax = torch.softmax(ouput_linear, dim=-1)
             path = torch.max(output_softmax, dim=-1).indices[0]
             loss = self.loss_func(output_softmax.squeeze(0), label)

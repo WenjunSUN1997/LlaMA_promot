@@ -84,7 +84,7 @@ def train(lang='newseye_de',
     for epoch_index in range(epoch_num):
         loss_list = []
         for step, data in tqdm(enumerate(dataloader_train), total=len(dataloader_train)):
-            output = model(data)
+            output = model(data, 'train')
             loss = output['loss']
             loss_list.append(loss.item())
             optimizer.zero_grad()

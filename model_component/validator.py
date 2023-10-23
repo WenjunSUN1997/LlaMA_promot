@@ -18,7 +18,7 @@ def validate(dataloader,
     print('\n' + goal + '\n')
     for step, data in tqdm(enumerate(dataloader), total=len(dataloader)):
         # break
-        output = model(data)
+        output = model(data, 'no_train')
         loss_list.append(output['loss'].item())
         for path_unit in output['path']:
             result_index += path_unit
