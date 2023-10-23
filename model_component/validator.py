@@ -10,7 +10,8 @@ def validate(dataloader,
              truth_df,
              lang,
              epoch_num,
-             model_name):
+             model_name,
+             type):
     predict_df = truth_df.copy(deep=True)
     loss_list = []
     result_index = []
@@ -27,7 +28,11 @@ def validate(dataloader,
     predict_df['NE-COARSE-LIT'] = label_result
     if not os.path.exists('record/' + lang + '/'):
         os.mkdir('record/' + lang + '/')
-    restore_path_general = 'record/' + lang + '/' + model_name.split('/')[-1] + '/'
+
+    if not os.path.exists('record/' + lang + '/' + type + '/'):
+        os.mkdir('record/' + lang + '/' + type + '/')
+
+    restore_path_general = 'record/' + lang + '/' + type + '/' + model_name.split('/')[-1] + '/'
     if not os.path.exists(restore_path_general):
         os.mkdir(restore_path_general)
 

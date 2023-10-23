@@ -2,6 +2,7 @@ from torch.utils.data import Dataset
 from transformers import AutoTokenizer, LlamaTokenizerFast
 from tool.read_data import read_data
 import torch
+from collections import Counter
 
 class Datasetor(Dataset):
     def __init__(self,
@@ -34,6 +35,7 @@ class Datasetor(Dataset):
         self.index_label_dict = index_label_dict
         self.text_chunked, self.label_chunked = self.split_list_with_padding(window, step)
         self.device = device
+        self.weight = self.get_weight()
 
     def split_list_with_padding(self,
                                 window,
@@ -53,6 +55,16 @@ class Datasetor(Dataset):
             label_result.append(label_chunk)
 
         return (text_result, label_result)
+
+    def get_weight(self):
+        label_list = [x for x in self.csv['label']]
+        element_counts = Counter(label_list)
+        total_elements = len(label_list)
+        element_percentages = {element: count / total_elements
+                               for element, count in element_counts.items()}
+        class_weights = {element: 1.0 / percentage
+                         for element, percentage in element_percentages.items()}
+        return torch.tensor(list(class_weights.values())).to(self.device)
 
     def __len__(self):
         return len(self.text_chunked)

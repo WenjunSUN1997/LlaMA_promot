@@ -45,4 +45,4 @@ def get_dataloader(batch_size,
     dataloader = DataLoader(datasetor,
                             batch_size=batch_size,
                             shuffle=False)
-    return (dataloader, csv, datasetor.label_index_dict, datasetor.index_label_dict)
+    return (dataloader, csv, datasetor.label_index_dict, datasetor.index_label_dict, datasetor.weight)

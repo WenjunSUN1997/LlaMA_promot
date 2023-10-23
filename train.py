@@ -5,6 +5,7 @@ from model_component.validator import validate
 from tqdm import tqdm
 import argparse
 from model_config.baseline_llame_crf import BaselineLllama
+from model_config.baseline_linear import BaselineLinear
 
 torch.manual_seed(3407)
 
@@ -19,7 +20,8 @@ def train(lang='newseye_de',
           batch_size=4,
           drop_out=0.3,
           lr=2e-5,
-          max_word_num=100):
+          max_word_num=100,
+          type='linear'):
     epoch_num = 1000
     lr = lr
     best_dev_loss = 10000000
@@ -29,37 +31,45 @@ def train(lang='newseye_de',
     best_test_f1_when_dev = 0
     best_dev_epoch = 0
     best_test_epoch = 0
-    dataloader_train, _, label_index_dict, index_label_dict = get_dataloader(batch_size=batch_size,
-                                                                             lang=lang,
-                                                                             goal='train',
-                                                                             model_name=model_name,
-                                                                             window=window,
-                                                                             step=step,
-                                                                             max_token_num=max_token_num,
-                                                                             device=device,
-                                                                             max_word_num=max_word_num)
-    dataloader_dev, truth_dev, _, _ = get_dataloader(batch_size=batch_size,
-                                                     lang=lang,
-                                                     goal='dev',
-                                                     model_name=model_name,
-                                                     window=window,
-                                                     step=window,
-                                                     max_token_num=max_token_num,
-                                                     device=device,
-                                                     max_word_num=max_word_num)
-    dataloader_test, truth_test, _, _ = get_dataloader(batch_size=batch_size,
-                                                       lang=lang,
-                                                       goal='test',
-                                                       model_name=model_name,
-                                                       window=window,
-                                                       step=window,
-                                                       max_token_num=max_token_num,
-                                                       device=device,
-                                                       max_word_num=max_word_num)
-    model = BaselineLllama(model_name=model_name,
-                           drop_out=drop_out,
-                           num_label=num_label,
-                           sim_dim=sim_dim)
+    dataloader_train, _, label_index_dict, index_label_dict, weight = get_dataloader(batch_size=batch_size,
+                                                                                     lang=lang,
+                                                                                     goal='train',
+                                                                                     model_name=model_name,
+                                                                                     window=window,
+                                                                                     step=step,
+                                                                                     max_token_num=max_token_num,
+                                                                                     device=device,
+                                                                                     max_word_num=max_word_num)
+    dataloader_dev, truth_dev, _, _, _ = get_dataloader(batch_size=batch_size,
+                                                        lang=lang,
+                                                        goal='dev',
+                                                        model_name=model_name,
+                                                        window=window,
+                                                        step=window,
+                                                        max_token_num=max_token_num,
+                                                        device=device,
+                                                        max_word_num=max_word_num)
+    dataloader_test, truth_test, _, _, _ = get_dataloader(batch_size=batch_size,
+                                                          lang=lang,
+                                                          goal='test',
+                                                          model_name=model_name,
+                                                          window=window,
+                                                          step=window,
+                                                          max_token_num=max_token_num,
+                                                          device=device,
+                                                          max_word_num=max_word_num)
+    if type == 'crf':
+        model = BaselineLllama(model_name=model_name,
+                               drop_out=drop_out,
+                               num_label=num_label,
+                               sim_dim=sim_dim)
+    else:
+        loss_func = torch.nn.CrossEntropyLoss(weight=weight)
+        model = BaselineLinear(model_name=model_name,
+                               drop_out=drop_out,
+                               num_label=num_label,
+                               sim_dim=sim_dim,
+                               loss_func=loss_func)
     model.to(device)
     model.train()
     for param in model.back_bone_model.parameters():
@@ -90,7 +100,8 @@ def train(lang='newseye_de',
                                    truth_df=truth_dev,
                                    lang=lang,
                                    epoch_num=epoch_index,
-                                   model_name=model_name)
+                                   model_name=model_name,
+                                   type=type)
         performance_test = validate(model=model,
                                     dataloader=dataloader_test,
                                     goal='test',
@@ -98,7 +109,8 @@ def train(lang='newseye_de',
                                     truth_df=truth_test,
                                     lang=lang,
                                     epoch_num=epoch_index,
-                                    model_name=model_name)
+                                    model_name=model_name,
+                                    type=type)
         dev_loss = performance_dev['loss']
         dev_f1 = performance_dev['fuzzy_f1']
         test_loss = performance_test['loss']
@@ -131,26 +143,29 @@ def train(lang='newseye_de',
               + '|| epoch: ' + str(best_test_epoch) + '\n' \
               + '*******************************************************\n'
         print(log)
-        with open('record/' + lang + '/log.txt', 'w', encoding='utf-8') as file:
+        path = 'record/' + lang + '/' + type + '/' + model_name.split('/')[-1] + '/log.txt'
+        with open(path, 'w', encoding='utf-8') as file:
             file.write(log)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--lang", default='newseye_sv')
-    parser.add_argument("--model_name", default='facebook/bart-large')
+    parser.add_argument("--model_name", default='bert-base-uncased')
     parser.add_argument("--num_label", default=9, type=int)
     parser.add_argument("--window", default=20, type=int)
     parser.add_argument("--max_word_num", default=1000, type=int)
     parser.add_argument("--step", default=10, type=int)
     parser.add_argument("--max_token_num", default=512, type=int)
-    parser.add_argument("--sim_dim", default=1024, type=int)
+    parser.add_argument("--sim_dim", default=768, type=int)
     parser.add_argument("--batch_size", default=10, type=int)
     parser.add_argument("--dropout", default=0.3, type=float)
     parser.add_argument("--lr", default=2e-5, type=float)
+    parser.add_argument("--type", default='crf', choices=['linear', 'crf'])
     parser.add_argument("--device", default='cuda:0')
     args = parser.parse_args()
     model_name = args.model_name
     lang = args.lang
+    type = args.type
     num_label = args.num_label
     window = args.window
     max_word_num = args.max_word_num
@@ -172,5 +187,6 @@ if __name__ == "__main__":
           drop_out=dropout,
           lr=lr,
           device=device,
-          max_word_num=max_word_num)
+          max_word_num=max_word_num,
+          type=type)
 
