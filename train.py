@@ -131,7 +131,7 @@ def train(lang='newseye_de',
               + '|| epoch: ' + str(best_test_epoch) + '\n' \
               + '*******************************************************\n'
         print(log)
-        with open('record/' + lang + '/log.txt', 'w',encoding='utf-8') as file:
+        with open('record/' + lang + '/log.txt', 'w', encoding='utf-8') as file:
             file.write(log)
 
 if __name__ == "__main__":
