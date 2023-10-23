@@ -22,8 +22,12 @@ class Datasetor(Dataset):
             self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         except:
             self.tokenizer = LlamaTokenizerFast.from_pretrained(model_name)
+
         if not self.tokenizer.pad_token:
             self.tokenizer.pad_token = self.tokenizer.eos_token
+
+        if 'bart' in model_name.lower():
+            self.tokenizer.add_prefix_space = True
 
         self.max_token_num = max_token_num
         self.label_index_dict = label_index_dict
