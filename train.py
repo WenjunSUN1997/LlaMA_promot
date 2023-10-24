@@ -21,7 +21,8 @@ def train(lang='newseye_de',
           drop_out=0.3,
           lr=2e-5,
           max_word_num=100,
-          type='linear'):
+          type='linear',
+          no_pad=True):
     epoch_num = 1000
     lr = lr
     best_dev_loss = 10000000
@@ -62,14 +63,16 @@ def train(lang='newseye_de',
         model = BaselineLllama(model_name=model_name,
                                drop_out=drop_out,
                                num_label=num_label,
-                               sim_dim=sim_dim)
+                               sim_dim=sim_dim,
+                               no_pad=no_pad)
     else:
         loss_func = torch.nn.CrossEntropyLoss(weight=weight)
         model = BaselineLinear(model_name=model_name,
                                drop_out=drop_out,
                                num_label=num_label,
                                sim_dim=sim_dim,
-                               loss_func=loss_func)
+                               loss_func=loss_func,
+                               no_pad=no_pad)
     model.to(device)
     model.train()
     for param in model.back_bone_model.parameters():
@@ -150,22 +153,24 @@ def train(lang='newseye_de',
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--lang", default='newseye_sv')
-    parser.add_argument("--model_name", default='mistralai/Mistral-7B-v0.1')
+    parser.add_argument("--model_name", default='dbmdz/bert-base-historic-multilingual-cased')
     parser.add_argument("--num_label", default=9, type=int)
     parser.add_argument("--window", default=20, type=int)
     parser.add_argument("--max_word_num", default=1000, type=int)
     parser.add_argument("--step", default=10, type=int)
     parser.add_argument("--max_token_num", default=512, type=int)
     parser.add_argument("--sim_dim", default=768, type=int)
-    parser.add_argument("--batch_size", default=10, type=int)
+    parser.add_argument("--batch_size", default=16, type=int)
     parser.add_argument("--dropout", default=0.3, type=float)
     parser.add_argument("--lr", default=0.01, type=float)
-    parser.add_argument("--type", default='crf', choices=['linear', 'crf'])
+    parser.add_argument("--type", default='linear', choices=['linear', 'crf'])
     parser.add_argument("--device", default='cuda:0')
+    parser.add_argument("--no_pad", default=0, type=int)
     args = parser.parse_args()
     model_name = args.model_name
     lang = args.lang
     type = args.type
+    no_pad = True if args.no_pad != 0 else False
     num_label = args.num_label
     window = args.window
     max_word_num = args.max_word_num
@@ -188,5 +193,6 @@ if __name__ == "__main__":
           lr=lr,
           device=device,
           max_word_num=max_word_num,
-          type=type)
+          type=type,
+          no_pad=no_pad)
 

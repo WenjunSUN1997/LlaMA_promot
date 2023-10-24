@@ -23,7 +23,16 @@ def get_dataloader(batch_size,
                                      'test': 'data/HIPE-2022-data/data/v2.1/newseye/fr/HIPE-2022-v2.1-newseye-test-fr.tsv'},
                       'newseye_sv': {'train': 'data/HIPE-2022-data/data/v2.1/newseye/sv/HIPE-2022-v2.1-newseye-train-sv.tsv',
                                      'dev': 'data/HIPE-2022-data/data/v2.1/newseye/sv/HIPE-2022-v2.1-newseye-dev-sv.tsv',
-                                     'test': 'data/HIPE-2022-data/data/v2.1/newseye/sv/HIPE-2022-v2.1-newseye-test-sv.tsv'}}
+                                     'test': 'data/HIPE-2022-data/data/v2.1/newseye/sv/HIPE-2022-v2.1-newseye-test-sv.tsv'},
+                      'ajmc_en': {'train': 'data/HIPE-2022-data/data/v2.1/ajmc/en/HIPE-2022-v2.1-ajmc-train-en.tsv',
+                                  'dev': 'data/HIPE-2022-data/data/v2.1/ajmc/en/HIPE-2022-v2.1-ajmc-dev-en.tsv',
+                                  'test': 'data/HIPE-2022-data/data/v2.1/ajmc/en/HIPE-2022-v2.1-ajmc-test-en.tsv'},
+                      'ajmc_de': {'train': 'data/HIPE-2022-data/data/v2.1/ajmc/de/HIPE-2022-v2.1-ajmc-train-de.tsv',
+                                  'dev': 'data/HIPE-2022-data/data/v2.1/ajmc/de/HIPE-2022-v2.1-ajmc-dev-de.tsv',
+                                  'test': 'data/HIPE-2022-data/data/v2.1/ajmc/de/HIPE-2022-v2.1-ajmc-test-de.tsv'},
+                      'ajmc_fr': {'train': 'data/HIPE-2022-data/data/v2.1/ajmc/fr/HIPE-2022-v2.1-ajmc-train-fr.tsv',
+                                  'dev': 'data/HIPE-2022-data/data/v2.1/ajmc/fr/HIPE-2022-v2.1-ajmc-dev-fr.tsv',
+                                  'test': 'data/HIPE-2022-data/data/v2.1/ajmc/fr/HIPE-2022-v2.1-ajmc-test-fr.tsv'}}
     path_list = list(lang_data_dict[lang].values())
     data_pack = read_data(path_list)
     if goal == 'train':

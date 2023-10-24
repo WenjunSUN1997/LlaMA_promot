@@ -7,7 +7,8 @@ class BaselineLllama(torch.nn.Module):
                  model_name,
                  num_label,
                  drop_out,
-                 sim_dim):
+                 sim_dim,
+                 no_pad):
         super(BaselineLllama, self).__init__()
         self.back_bone_model = AutoModel.from_pretrained(model_name)
         self.crf = torchcrf.CRF(num_tags=num_label,
@@ -15,6 +16,7 @@ class BaselineLllama(torch.nn.Module):
         self.linear = torch.nn.Linear(in_features=sim_dim,
                                       out_features=num_label)
         self.drop_out = torch.nn.Dropout(p=drop_out)
+        self.no_pad = no_pad
 
     def get_first_token_index(self, data):
         word_ids = data['word_ids']
@@ -47,8 +49,16 @@ class BaselineLllama(torch.nn.Module):
         first_token_index = self.get_first_token_index(data)
         for batch_index in range(batch_size):
             label = data['label'][batch_index][data['label'][batch_index] != -1]
-            input_ids = data['input_ids'][batch_index].unsqueeze(0)
-            attention_mask = data['attention_mask'][batch_index].unsqueeze(0)
+            if self.no_pad:
+                real_input_ids_index = torch.nonzero(data['attention_mask'][batch_index]).squeeze(-1)
+                input_ids = data['input_ids'][batch_index][real_input_ids_index]
+                attention_mask = data['attention_mask'][batch_index][real_input_ids_index]
+            else:
+                input_ids = data['input_ids'][batch_index]
+                attention_mask = data['attention_mask'][batch_index]
+
+            input_ids = input_ids.unsqueeze(0)
+            attention_mask = attention_mask.unsqueeze(0)
             all_token_embedding = self.back_bone_model(input_ids=input_ids,
                                                        attention_mask=attention_mask)['last_hidden_state']
             assert len(label) == len(first_token_index[batch_index])

@@ -8,11 +8,13 @@ class BaselineLinear(BaselineLllama):
                  num_label,
                  drop_out,
                  sim_dim,
-                 loss_func):
+                 loss_func,
+                 no_pad):
         super(BaselineLinear, self).__init__(model_name,
-                                         num_label,
-                                         drop_out,
-                                         sim_dim)
+                                             num_label,
+                                             drop_out,
+                                             sim_dim,
+                                             no_pad)
         self.loss_func = loss_func
 
     def forward_sentence(self, data, goal):
@@ -22,8 +24,16 @@ class BaselineLinear(BaselineLllama):
         first_token_index = self.get_first_token_index(data)
         for batch_index in range(batch_size):
             label = data['label'][batch_index][data['label'][batch_index] != -1]
-            input_ids = data['input_ids'][batch_index].unsqueeze(0)
-            attention_mask = data['attention_mask'][batch_index].unsqueeze(0)
+            if self.no_pad:
+                real_input_ids_index = torch.nonzero(data['attention_mask'][batch_index]).squeeze(-1)
+                input_ids = data['input_ids'][batch_index][real_input_ids_index]
+                attention_mask = data['attention_mask'][batch_index][real_input_ids_index]
+            else:
+                input_ids = data['input_ids'][batch_index]
+                attention_mask = data['attention_mask'][batch_index]
+
+            input_ids = input_ids.unsqueeze(0)
+            attention_mask = attention_mask.unsqueeze(0)
             all_token_embedding = self.back_bone_model(input_ids=input_ids,
                                                        attention_mask=attention_mask)['last_hidden_state']
             assert len(label) == len(first_token_index[batch_index])
