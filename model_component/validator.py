@@ -25,7 +25,10 @@ def validate(dataloader,
         for path_unit in output['path']:
             result_index += path_unit
 
-    label_result = [index_label_dict[x] for x in result_index[:len(truth_df)]]
+    if general:
+        label_result = sub_process(index_label_general_dict, result_index[:len(truth_df)])
+    else:
+        label_result = [index_label_dict[x] for x in result_index[:len(truth_df)]]
     # label_result = ['O'] * len(truth_df)
     predict_df['NE-COARSE-LIT'] = label_result
     if not os.path.exists('record/' + lang + '/'):
@@ -57,11 +60,22 @@ def sub_process(index_label_general_dict, predict:list):
     label_index_general_dict = {v: k for k, v in index_label_general_dict.items()}
     index_o = label_index_general_dict['O']
     result = []
-    for index in range(len(predict)):
+    if predict[0] == index_o:
+        result.append('0')
+    else:
+        result.append('B-'+index_label_general_dict[predict[0]])
+
+    for index in range(1, len(predict)):
         if predict[index] == index_o:
             result.append('O')
-        if predict[index]:
-            pass
+        else:
+            if predict[index] != predict[index-1]:
+                result.append('B-'+index_label_general_dict[predict[index]])
+            else:
+                result.append('I-' + index_label_general_dict[predict[index]])
+
+    return result
+
 
 
 if __name__ == "__main__":

@@ -9,12 +9,14 @@ class BaselineLinear(BaselineLllama):
                  drop_out,
                  sim_dim,
                  loss_func,
-                 no_pad):
+                 no_pad,
+                 general):
         super(BaselineLinear, self).__init__(model_name,
                                              num_label,
                                              drop_out,
                                              sim_dim,
-                                             no_pad)
+                                             no_pad,
+                                             general)
         self.loss_func = loss_func
 
     def forward_sentence(self, data, goal):
@@ -23,7 +25,13 @@ class BaselineLinear(BaselineLllama):
         batch_size = data['word_ids'].shape[0]
         first_token_index = self.get_first_token_index(data)
         for batch_index in range(batch_size):
-            label = data['label'][batch_index][data['label'][batch_index] != -1]
+            if self.general:
+                label = data['label_general'][batch_index][
+                    data['label_general'][batch_index] != -1]
+            else:
+                label = data['label'][batch_index][
+                    data['label'][batch_index] != -1]
+
             if self.no_pad:
                 real_input_ids_index = torch.nonzero(data['attention_mask'][batch_index]).squeeze(-1)
                 input_ids = data['input_ids'][batch_index][real_input_ids_index]

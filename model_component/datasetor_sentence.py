@@ -72,7 +72,7 @@ class DatasetorSentence(Datasetor):
                         label_general_split.append(result_label_general_unit[:max_word_id])
                         result_text_unit = result_text_unit[max_word_id:]
                         result_label_unit = result_label_unit[max_word_id:]
-                        result_label_general_unit = label_general_split[max_word_id:]
+                        result_label_general_unit = result_label_general_unit[max_word_id:]
                     else:
                         text_split.append(result_text_unit)
                         label_split.append(result_label_unit)
