@@ -22,7 +22,8 @@ def train(lang='newseye_de',
           lr=2e-5,
           max_word_num=100,
           type='linear',
-          no_pad=True):
+          no_pad=True,
+          general=False):
     epoch_num = 1000
     lr = lr
     best_dev_loss = 10000000
@@ -32,33 +33,34 @@ def train(lang='newseye_de',
     best_test_f1_when_dev = 0
     best_dev_epoch = 0
     best_test_epoch = 0
-    dataloader_train, _, label_index_dict, index_label_dict, weight = get_dataloader(batch_size=batch_size,
-                                                                                     lang=lang,
-                                                                                     goal='train',
-                                                                                     model_name=model_name,
-                                                                                     window=window,
-                                                                                     step=step,
-                                                                                     max_token_num=max_token_num,
-                                                                                     device=device,
-                                                                                     max_word_num=max_word_num)
-    dataloader_dev, truth_dev, _, _, _ = get_dataloader(batch_size=batch_size,
-                                                        lang=lang,
-                                                        goal='dev',
-                                                        model_name=model_name,
-                                                        window=window,
-                                                        step=window,
-                                                        max_token_num=max_token_num,
-                                                        device=device,
-                                                        max_word_num=max_word_num)
-    dataloader_test, truth_test, _, _, _ = get_dataloader(batch_size=batch_size,
-                                                          lang=lang,
-                                                          goal='test',
-                                                          model_name=model_name,
-                                                          window=window,
-                                                          step=window,
-                                                          max_token_num=max_token_num,
-                                                          device=device,
-                                                          max_word_num=max_word_num)
+    dataloader_train, _, label_index_dict, \
+    index_label_dict, weight, weight_general, index_label_general_dict = get_dataloader(batch_size=batch_size,
+                                                                                        lang=lang,
+                                                                                        goal='train',
+                                                                                        model_name=model_name,
+                                                                                        window=window,
+                                                                                        step=step,
+                                                                                        max_token_num=max_token_num,
+                                                                                        device=device,
+                                                                                        max_word_num=max_word_num)
+    dataloader_dev, truth_dev, _, _, _, _, _ = get_dataloader(batch_size=batch_size,
+                                                              lang=lang,
+                                                              goal='dev',
+                                                              model_name=model_name,
+                                                              window=window,
+                                                              step=window,
+                                                              max_token_num=max_token_num,
+                                                              device=device,
+                                                              max_word_num=max_word_num)
+    dataloader_test, truth_test, _, _, _, _, _ = get_dataloader(batch_size=batch_size,
+                                                                lang=lang,
+                                                                goal='test',
+                                                                model_name=model_name,
+                                                                window=window,
+                                                                step=window,
+                                                                max_token_num=max_token_num,
+                                                                device=device,
+                                                                max_word_num=max_word_num)
     if type == 'crf':
         model = BaselineLllama(model_name=model_name,
                                drop_out=drop_out,
@@ -66,7 +68,11 @@ def train(lang='newseye_de',
                                sim_dim=sim_dim,
                                no_pad=no_pad)
     else:
-        loss_func = torch.nn.CrossEntropyLoss(weight=weight)
+        if general:
+            loss_func = torch.nn.CrossEntropyLoss(weight=weight_general)
+        else:
+            loss_func = torch.nn.CrossEntropyLoss(weight=weight)
+
         model = BaselineLinear(model_name=model_name,
                                drop_out=drop_out,
                                num_label=num_label,
@@ -81,8 +87,8 @@ def train(lang='newseye_de',
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
     scheduler = ReduceLROnPlateau(optimizer,
                                   mode='min',
-                                  factor=0.8,
-                                  patience=2,
+                                  factor=0.5,
+                                  patience=1,
                                   verbose=True)
     for epoch_index in range(epoch_num):
         loss_list = []
@@ -104,7 +110,9 @@ def train(lang='newseye_de',
                                    lang=lang,
                                    epoch_num=epoch_index,
                                    model_name=model_name,
-                                   type=type)
+                                   type=type,
+                                   general=general,
+                                   index_label_general_dict=index_label_general_dict)
         performance_test = validate(model=model,
                                     dataloader=dataloader_test,
                                     goal='test',
@@ -113,7 +121,9 @@ def train(lang='newseye_de',
                                     lang=lang,
                                     epoch_num=epoch_index,
                                     model_name=model_name,
-                                    type=type)
+                                    type=type,
+                                    general=general,
+                                    index_label_general_dict=index_label_general_dict)
         dev_loss = performance_dev['loss']
         dev_f1 = performance_dev['fuzzy_f1']
         test_loss = performance_test['loss']
@@ -153,20 +163,22 @@ def train(lang='newseye_de',
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--lang", default='newseye_sv')
-    parser.add_argument("--model_name", default='dbmdz/bert-base-historic-multilingual-cased')
+    parser.add_argument("--model_name", default='mistralai/Mistral-7B-v0.1')
     parser.add_argument("--num_label", default=9, type=int)
     parser.add_argument("--window", default=20, type=int)
     parser.add_argument("--max_word_num", default=1000, type=int)
     parser.add_argument("--step", default=10, type=int)
-    parser.add_argument("--max_token_num", default=512, type=int)
-    parser.add_argument("--sim_dim", default=768, type=int)
+    parser.add_argument("--max_token_num", default=2048, type=int)
+    parser.add_argument("--sim_dim", default=4096, type=int)
     parser.add_argument("--batch_size", default=16, type=int)
     parser.add_argument("--dropout", default=0.3, type=float)
     parser.add_argument("--lr", default=0.01, type=float)
     parser.add_argument("--type", default='linear', choices=['linear', 'crf'])
     parser.add_argument("--device", default='cuda:0')
-    parser.add_argument("--no_pad", default=0, type=int)
+    parser.add_argument("--no_pad", default=1, type=int)
+    parser.add_argument("--general", default=0, type=int)
     args = parser.parse_args()
+    general = True if args.general == 1 else False
     model_name = args.model_name
     lang = args.lang
     type = args.type
@@ -194,5 +206,6 @@ if __name__ == "__main__":
           device=device,
           max_word_num=max_word_num,
           type=type,
-          no_pad=no_pad)
+          no_pad=no_pad,
+          general=general)
 

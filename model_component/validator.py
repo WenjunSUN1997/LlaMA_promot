@@ -11,7 +11,9 @@ def validate(dataloader,
              lang,
              epoch_num,
              model_name,
-             type):
+             type,
+             general,
+             index_label_general_dict):
     predict_df = truth_df.copy(deep=True)
     loss_list = []
     result_index = []
@@ -50,6 +52,17 @@ def validate(dataloader,
     return {'loss': sum(loss_list) / len(loss_list),
             'result_index': result_index,
             'fuzzy_f1': fuzzy_f1}
+
+def sub_process(index_label_general_dict, predict:list):
+    label_index_general_dict = {v: k for k, v in index_label_general_dict.items()}
+    index_o = label_index_general_dict['O']
+    result = []
+    for index in range(len(predict)):
+        if predict[index] == index_o:
+            result.append('O')
+        if predict[index]:
+            pass
+
 
 if __name__ == "__main__":
     get_results(f_ref='../record/newseye_de/0/truth.tsv',

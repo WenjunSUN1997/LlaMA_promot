@@ -15,7 +15,10 @@ class DatasetorSentence(Datasetor):
                  label_index_dict=None,
                  index_label_dict=None,
                  device='cuda:0',
-                 max_word_num=100):
+                 max_word_num=100,
+                 label_index_general_dict=None,
+                 index_label_general_dict=None
+                 ):
         super(DatasetorSentence, self).__init__(csv,
                                                 window=window,
                                                 step=step,
@@ -23,9 +26,11 @@ class DatasetorSentence(Datasetor):
                                                 max_token_num=max_token_num,
                                                 label_index_dict=label_index_dict,
                                                 index_label_dict=index_label_dict,
-                                                device=device)
+                                                device=device,
+                                                label_index_general_dict=label_index_general_dict,
+                                                index_label_general_dict=index_label_general_dict)
         self.max_word_num = 1000
-        self.text_sentence, self.label_sentence = self.split_by_sentence()
+        self.text_sentence, self.label_sentence, self.label_general_sentence = self.split_by_sentence()
 
     def split_list(self, input_list, m):
         result = []
@@ -38,16 +43,20 @@ class DatasetorSentence(Datasetor):
     def split_by_sentence(self):
         result_text = []
         result_label = []
+        result_label_general = []
         result_text_unit = []
         result_label_unit = []
+        result_label_general_unit = []
         print('\n prepare data')
         for index in tqdm(range(len(self.csv))):
             result_text_unit.append(self.csv['TOKEN'][index])
             result_label_unit.append(self.csv['label'][index])
+            result_label_general_unit.append(self.csv['label_general'][index])
             if 'EndOfSentence' in self.csv['MISC'][index] \
                     or index == len(self.csv)-1:
                 text_split = []
                 label_split = []
+                label_general_split = []
                 while True:
                     output_tokenizer = self.tokenizer(result_text_unit,
                                                       is_split_into_words=True,
@@ -60,21 +69,26 @@ class DatasetorSentence(Datasetor):
                     if max_word_id < len(result_text_unit)-1:
                         text_split.append(result_text_unit[:max_word_id])
                         label_split.append(result_label_unit[:max_word_id])
+                        label_general_split.append(result_label_general_unit[:max_word_id])
                         result_text_unit = result_text_unit[max_word_id:]
                         result_label_unit = result_label_unit[max_word_id:]
+                        result_label_general_unit = label_general_split[max_word_id:]
                     else:
                         text_split.append(result_text_unit)
                         label_split.append(result_label_unit)
+                        label_general_split.append(result_label_general_unit)
                         break
 
                 for index_split in range(len(text_split)):
                     result_text.append(text_split[index_split])
                     result_label.append(label_split[index_split])
+                    result_label_general.append(label_general_split[index_split])
 
                 result_text_unit = []
                 result_label_unit = []
+                result_label_general_unit = []
 
-        return (result_text, result_label)
+        return (result_text, result_label, result_label_general)
 
     def __len__(self):
         return len(self.text_sentence)
@@ -82,6 +96,8 @@ class DatasetorSentence(Datasetor):
     def __getitem__(self, item):
         label = self.label_sentence[item]
         label_padded = label + [-1] * (self.max_word_num - len(label))
+        label_general = self.label_general_sentence[item]
+        label_general_padded = label_general + [-1] * (self.max_word_num - len(label_general))
         label_attention = [1] * len(label) + [0] * (self.max_word_num - len(label))
         output_tokenizer = self.tokenizer([self.text_sentence[item]],
                                           is_split_into_words=True,
@@ -102,6 +118,7 @@ class DatasetorSentence(Datasetor):
                 'attention_mask': output_tokenizer['attention_mask'].squeeze(0),
                 'label_attention': torch.tensor(label_attention).to(self.device),
                 'label': torch.tensor(label_padded).to(self.device),
+                'label_general': torch.tensor(label_general_padded).to(self.device),
                 'item': torch.tensor(item).to(self.device)
                 }
 

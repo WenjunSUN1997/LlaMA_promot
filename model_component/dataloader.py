@@ -50,8 +50,16 @@ def get_dataloader(batch_size,
                                   label_index_dict=data_pack['label_index_dict'],
                                   index_label_dict=data_pack['index_label_dict'],
                                   device=device,
-                                  max_word_num=max_word_num)
+                                  max_word_num=max_word_num,
+                                  label_index_general_dict=data_pack['label_index_general_dict'],
+                                  index_label_general_dict=data_pack['index_label_general_dict'])
     dataloader = DataLoader(datasetor,
                             batch_size=batch_size,
                             shuffle=False)
-    return (dataloader, csv, datasetor.label_index_dict, datasetor.index_label_dict, datasetor.weight)
+    return (dataloader,
+            csv,
+            datasetor.label_index_dict,
+            datasetor.index_label_dict,
+            datasetor.weight,
+            datasetor.weight_general,
+            datasetor.index_label_general_dict)

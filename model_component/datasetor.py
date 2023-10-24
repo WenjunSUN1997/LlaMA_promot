@@ -13,9 +13,14 @@ class Datasetor(Dataset):
                  max_token_num=512,
                  label_index_dict=None,
                  index_label_dict=None,
-                 device='cuda:0'):
+                 device='cuda:0',
+                 label_index_general_dict=None,
+                 index_label_general_dict=None):
         self.text = [x for x in csv['TOKEN']]
         self.label = [x for x in csv['label']]
+        self.label_index_general_dict = label_index_general_dict
+        self.index_label_general_dict = index_label_general_dict
+        self.label_general = [x for x in csv['label_general']]
         self.csv = csv
         self.window = window
         self.step = step
@@ -38,7 +43,8 @@ class Datasetor(Dataset):
         self.index_label_dict = index_label_dict
         self.text_chunked, self.label_chunked = self.split_list_with_padding(window, step)
         self.device = device
-        self.weight = self.get_weight()
+        self.weight = self.get_weight('normal')
+        self.weight_general = self.get_weight('general')
 
     def split_list_with_padding(self,
                                 window,
@@ -59,15 +65,19 @@ class Datasetor(Dataset):
 
         return (text_result, label_result)
 
-    def get_weight(self):
-        label_list = [x for x in self.csv['label']]
+    def get_weight(self, flag):
+        if flag != 'general':
+            label_list = [x for x in self.csv['label']]
+        else:
+            label_list = [x for x in self.csv['label_general']]
+
         element_counts = Counter(label_list)
         total_elements = len(label_list)
         element_percentages = {element: count / total_elements
                                for element, count in element_counts.items()}
         class_weights = {element: 1.0 / percentage
                          for element, percentage in element_percentages.items()}
-        return torch.tensor(list(class_weights.values())).to(self.device)
+        return torch.tensor([class_weights[x] for x in range(len(class_weights))]).to(self.device)
 
     def __len__(self):
         return len(self.text_chunked)
