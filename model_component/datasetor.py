@@ -27,6 +27,9 @@ class Datasetor(Dataset):
         if not self.tokenizer.pad_token:
             self.tokenizer.pad_token = self.tokenizer.eos_token
 
+        if self.tokenizer.padding_side == 'left':
+            self.tokenizer.padding_side = 'right'
+
         if 'bart' in model_name.lower():
             self.tokenizer.add_prefix_space = True
 

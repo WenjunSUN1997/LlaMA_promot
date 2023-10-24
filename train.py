@@ -150,7 +150,7 @@ def train(lang='newseye_de',
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--lang", default='newseye_sv')
-    parser.add_argument("--model_name", default='bert-base-uncased')
+    parser.add_argument("--model_name", default='mistralai/Mistral-7B-v0.1')
     parser.add_argument("--num_label", default=9, type=int)
     parser.add_argument("--window", default=20, type=int)
     parser.add_argument("--max_word_num", default=1000, type=int)
@@ -159,7 +159,7 @@ if __name__ == "__main__":
     parser.add_argument("--sim_dim", default=768, type=int)
     parser.add_argument("--batch_size", default=10, type=int)
     parser.add_argument("--dropout", default=0.3, type=float)
-    parser.add_argument("--lr", default=2e-5, type=float)
+    parser.add_argument("--lr", default=0.01, type=float)
     parser.add_argument("--type", default='crf', choices=['linear', 'crf'])
     parser.add_argument("--device", default='cuda:0')
     args = parser.parse_args()

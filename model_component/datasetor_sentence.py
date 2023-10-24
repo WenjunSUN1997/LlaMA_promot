@@ -40,7 +40,7 @@ class DatasetorSentence(Datasetor):
         result_label = []
         result_text_unit = []
         result_label_unit = []
-        print('prepare data\n')
+        print('\n prepare data')
         for index in tqdm(range(len(self.csv))):
             result_text_unit.append(self.csv['TOKEN'][index])
             result_label_unit.append(self.csv['label'][index])
