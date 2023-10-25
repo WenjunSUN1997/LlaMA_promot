@@ -101,7 +101,7 @@ def train(lang='newseye_de',
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            break
+            # break
 
         print('loss:', sum(loss_list) / len(loss_list))
         performance_dev = validate(model=model,
@@ -165,13 +165,13 @@ def train(lang='newseye_de',
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--lang", default='newseye_sv')
-    parser.add_argument("--model_name", default='bert-base-uncased')
+    parser.add_argument("--model_name", default='mistralai/Mistral-7B-v0.1')
     parser.add_argument("--num_label", default=5, type=int)
     parser.add_argument("--window", default=20, type=int)
     parser.add_argument("--max_word_num", default=1000, type=int)
     parser.add_argument("--step", default=10, type=int)
-    parser.add_argument("--max_token_num", default=512, type=int)
-    parser.add_argument("--sim_dim", default=768, type=int)
+    parser.add_argument("--max_token_num", default=1024, type=int)
+    parser.add_argument("--sim_dim", default=4096, type=int)
     parser.add_argument("--batch_size", default=16, type=int)
     parser.add_argument("--dropout", default=0.3, type=float)
     parser.add_argument("--lr", default=0.01, type=float)

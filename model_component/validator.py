@@ -61,7 +61,7 @@ def sub_process(index_label_general_dict, predict:list):
     index_o = label_index_general_dict['O']
     result = []
     if predict[0] == index_o:
-        result.append('0')
+        result.append('O')
     else:
         result.append('B-'+index_label_general_dict[predict[0]])
 
