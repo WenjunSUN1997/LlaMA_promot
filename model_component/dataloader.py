@@ -33,7 +33,11 @@ def get_dataloader(batch_size,
                                   'test': 'data/HIPE-2022-data/data/v2.1/ajmc/de/HIPE-2022-v2.1-ajmc-test-de.tsv'},
                       'ajmc_fr': {'train': 'data/HIPE-2022-data/data/v2.1/ajmc/fr/HIPE-2022-v2.1-ajmc-train-fr.tsv',
                                   'dev': 'data/HIPE-2022-data/data/v2.1/ajmc/fr/HIPE-2022-v2.1-ajmc-dev-fr.tsv',
-                                  'test': 'data/HIPE-2022-data/data/v2.1/ajmc/fr/HIPE-2022-v2.1-ajmc-test-fr.tsv'}}
+                                  'test': 'data/HIPE-2022-data/data/v2.1/ajmc/fr/HIPE-2022-v2.1-ajmc-test-fr.tsv'},
+                      'ann_en': {'train': 'data/ate/en_ann_train.tsv',
+                                  'dev': 'data/ate/en_ann_dev.tsv',
+                                  'test': 'data/ate/en_ann_test.tsv'}
+                      }
     path_list = list(lang_data_dict[lang].values())
     data_pack = read_data(path_list)
     if goal == 'train':

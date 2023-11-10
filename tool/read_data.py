@@ -13,7 +13,7 @@ def read_data(file_path_list:list):
                            skip_blank_lines=False)
         file = file[~file['TOKEN'].astype(str).str.startswith('#')]
         file = file[~file['TOKEN'].astype(str).str.startswith('\t')]
-        file = file.dropna(axis=0)
+        file = file.dropna(subset=['TOKEN'])
         file = file.reset_index(drop=True)
         file_list.append(file)
         for data in file['NE-COARSE-LIT']:

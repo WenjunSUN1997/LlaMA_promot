@@ -164,14 +164,14 @@ def train(lang='newseye_de',
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--lang", default='newseye_sv')
-    parser.add_argument("--model_name", default='mistralai/Mistral-7B-v0.1')
-    parser.add_argument("--num_label", default=5, type=int)
+    parser.add_argument("--lang", default='ann_en')
+    parser.add_argument("--model_name", default='bert-base-uncased')
+    parser.add_argument("--num_label", default=2, type=int)
     parser.add_argument("--window", default=20, type=int)
     parser.add_argument("--max_word_num", default=1000, type=int)
     parser.add_argument("--step", default=10, type=int)
     parser.add_argument("--max_token_num", default=1024, type=int)
-    parser.add_argument("--sim_dim", default=4096, type=int)
+    parser.add_argument("--sim_dim", default=768, type=int)
     parser.add_argument("--batch_size", default=16, type=int)
     parser.add_argument("--dropout", default=0.3, type=float)
     parser.add_argument("--lr", default=0.01, type=float)
@@ -180,6 +180,7 @@ if __name__ == "__main__":
     parser.add_argument("--no_pad", default=1, type=int)
     parser.add_argument("--general", default=1, type=int)
     args = parser.parse_args()
+    print(args)
     general = True if args.general == 1 else False
     model_name = args.model_name
     lang = args.lang

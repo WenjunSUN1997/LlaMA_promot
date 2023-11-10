@@ -9,7 +9,7 @@ class DatasetorAte(DatasetorSentence):
                  csv,
                  window=10,
                  step=9,
-                 model_name='mistralai/Mistral-7B-v0.1',
+                 model_name='bert-base-uncased',
                  max_token_num=512,
                  label_index_dict=None,
                  index_label_dict=None,
@@ -80,7 +80,7 @@ class DatasetorAte(DatasetorSentence):
         return (result_text, result_label, result_label_general)
 
 if __name__ == "__main__":
-    file_path_list = ['../data/en_ann_train.tsv']
+    file_path_list = ['../data/ate/en_ann_train.tsv']
     data = read_data(file_path_list=file_path_list)
     datasetor_obj = DatasetorAte(data['file_list'][0],
                               label_index_dict=data['label_index_dict'],
