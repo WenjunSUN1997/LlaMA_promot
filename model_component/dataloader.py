@@ -36,7 +36,24 @@ def get_dataloader(batch_size,
                                   'test': 'data/HIPE-2022-data/data/v2.1/ajmc/fr/HIPE-2022-v2.1-ajmc-test-fr.tsv'},
                       'ann_en': {'train': 'data/ate/en_ann_train.tsv',
                                   'dev': 'data/ate/en_ann_dev.tsv',
-                                  'test': 'data/ate/en_ann_test.tsv'}
+                                  'test': 'data/ate/en_ann_test.tsv'},
+                      'nes_en': {'train': 'data/ate/en_nes_train.tsv',
+                                  'dev': 'data/ate/en_nes_dev.tsv',
+                                  'test': 'data/ate/en_nes_test.tsv'},
+                                 
+                      'ann_fr': {'train': 'data/ate/fr_ann_train.tsv',
+                                  'dev': 'data/ate/fr_ann_dev.tsv',
+                                  'test': 'data/ate/fr_ann_test.tsv'},
+                      'nes_fr': {'train': 'data/ate/fr_nes_train.tsv',
+                                  'dev': 'data/ate/fr_nes_dev.tsv',
+                                  'test': 'data/ate/fr_nes_test.tsv'},
+                                 
+                      'ann_nl': {'train': 'data/ate/nl_ann_train.tsv',
+                                  'dev': 'data/ate/nl_ann_dev.tsv',
+                                  'test': 'data/ate/nl_ann_test.tsv'},
+                      'nes_nl': {'train': 'data/ate/nl_nes_train.tsv',
+                                  'dev': 'data/ate/nl_nes_dev.tsv',
+                                  'test': 'data/ate/nl_nes_test.tsv'}
                       }
     path_list = list(lang_data_dict[lang].values())
     data_pack = read_data(path_list)
