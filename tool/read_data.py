@@ -1,5 +1,4 @@
 import pandas as pd
-import csv
 
 def read_data(file_path_list:list):
     file_list = []

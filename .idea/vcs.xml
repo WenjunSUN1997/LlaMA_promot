@@ -3,6 +3,7 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/HIPE-scorer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/LS-LLaMA" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/data/HIPE-2022-data" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/evaluator/HIPE-scorer" vcs="Git" />
   </component>
