@@ -6,6 +6,7 @@ from tqdm import tqdm
 import argparse
 from model_config.baseline_llame_crf import BaselineLllama
 from model_config.baseline_linear import BaselineLinear
+from model_config.baseline_unmask_llama import UnmaskedllamaBaseline
 
 torch.manual_seed(3407)
 
@@ -23,7 +24,8 @@ def train(lang='newseye_de',
           max_word_num=100,
           type='linear',
           no_pad=True,
-          general=False):
+          general=False,
+          retrain_backbone=False):
     epoch_num = 1000
     lr = lr
     best_dev_loss = 10000000
@@ -61,6 +63,12 @@ def train(lang='newseye_de',
                                                                 max_token_num=max_token_num,
                                                                 device=device,
                                                                 max_word_num=max_word_num)
+
+    if general:
+        loss_func = torch.nn.CrossEntropyLoss(weight=weight_general)
+    else:
+        loss_func = torch.nn.CrossEntropyLoss(weight=weight)
+
     if type == 'crf':
         model = BaselineLllama(model_name=model_name,
                                drop_out=drop_out,
@@ -68,12 +76,13 @@ def train(lang='newseye_de',
                                sim_dim=sim_dim,
                                no_pad=no_pad,
                                general=general)
+    elif type == 'unllama':
+        model = UnmaskedllamaBaseline(model_name=model_name,
+                                      loss_func=loss_func,
+                                      num_label=num_label,
+                                      sim_dim=sim_dim,
+                                      weight=weight)
     else:
-        if general:
-            loss_func = torch.nn.CrossEntropyLoss(weight=weight_general)
-        else:
-            loss_func = torch.nn.CrossEntropyLoss(weight=weight)
-
         model = BaselineLinear(model_name=model_name,
                                drop_out=drop_out,
                                num_label=num_label,
@@ -83,8 +92,9 @@ def train(lang='newseye_de',
                                general=general)
     model.to(device)
     model.train()
-    for param in model.back_bone_model.parameters():
-        param.requires_grad = False
+    if not retrain_backbone:
+        for param in model.back_bone_model.parameters():
+            param.requires_grad = False
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=lr)
     scheduler = ReduceLROnPlateau(optimizer,
@@ -164,27 +174,29 @@ def train(lang='newseye_de',
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--lang", default='ann_en')
-    parser.add_argument("--model_name", default='bert-base-uncased')
-    parser.add_argument("--num_label", default=2, type=int)
+    parser.add_argument("--lang", default='newseye_fi')
+    parser.add_argument("--model_name", default='NousResearch/Llama-2-7b-hf')
+    parser.add_argument("--num_label", default=9, type=int)
     parser.add_argument("--window", default=20, type=int)
     parser.add_argument("--max_word_num", default=1000, type=int)
     parser.add_argument("--step", default=10, type=int)
     parser.add_argument("--max_token_num", default=1024, type=int)
-    parser.add_argument("--sim_dim", default=768, type=int)
-    parser.add_argument("--batch_size", default=16, type=int)
-    parser.add_argument("--dropout", default=0.3, type=float)
-    parser.add_argument("--lr", default=0.01, type=float)
-    parser.add_argument("--type", default='linear', choices=['linear', 'crf'])
-    parser.add_argument("--device", default='cuda:0')
+    parser.add_argument("--sim_dim", default=4096, type=int)
+    parser.add_argument("--batch_size", default=4, type=int)
+    parser.add_argument("--dropout", default=0.1, type=float)
+    parser.add_argument("--lr", default=0.00001, type=float)
+    parser.add_argument("--type", default='unllama', choices=['linear', 'crf', 'unllama'])
+    parser.add_argument("--device", default='cuda:1')
     parser.add_argument("--no_pad", default=1, type=int)
-    parser.add_argument("--general", default=1, type=int)
+    parser.add_argument("--retrain_backbone", default=1, type=int)
+    parser.add_argument("--general", default=0, type=int)
     args = parser.parse_args()
     print(args)
     general = True if args.general == 1 else False
     model_name = args.model_name
     lang = args.lang
     type = args.type
+    retrain_backbone = True if args.retrain_backbone != 0 else False
     no_pad = True if args.no_pad != 0 else False
     num_label = args.num_label
     window = args.window
@@ -210,5 +222,6 @@ if __name__ == "__main__":
           max_word_num=max_word_num,
           type=type,
           no_pad=no_pad,
-          general=general)
+          general=general,
+          retrain_backbone=retrain_backbone)
 
