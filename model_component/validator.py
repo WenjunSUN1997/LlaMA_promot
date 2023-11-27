@@ -13,7 +13,8 @@ def validate(dataloader,
              model_name,
              type,
              general,
-             index_label_general_dict):
+             index_label_general_dict,
+             log_dir):
     predict_df = truth_df.copy(deep=True)
     loss_list = []
     result_index = []
@@ -31,13 +32,13 @@ def validate(dataloader,
         label_result = [index_label_dict[x] for x in result_index[:len(truth_df)]]
     # label_result = ['O'] * len(truth_df)
     predict_df['NE-COARSE-LIT'] = label_result
-    if not os.path.exists('record/' + lang + '/'):
-        os.mkdir('record/' + lang + '/')
+    if not os.path.exists('record/' + log_dir + '/'):
+        os.mkdir('record/' + log_dir + '/')
 
-    if not os.path.exists('record/' + lang + '/' + type + '/'):
-        os.mkdir('record/' + lang + '/' + type + '/')
+    if not os.path.exists('record/' + log_dir + '/' + type + '/'):
+        os.mkdir('record/' + log_dir + '/' + type + '/')
 
-    restore_path_general = 'record/' + lang + '/' + type + '/' + model_name.split('/')[-1] + '/'
+    restore_path_general = 'record/' + log_dir + '/' + type + '/' + model_name.split('/')[-1] + '/'
     if not os.path.exists(restore_path_general):
         os.mkdir(restore_path_general)
 

@@ -30,7 +30,8 @@ class DatasetorSentence(Datasetor):
                                                 label_index_general_dict=label_index_general_dict,
                                                 index_label_general_dict=index_label_general_dict)
         self.max_word_num = 1000
-        self.text_sentence, self.label_sentence, self.label_general_sentence = self.split_by_sentence()
+        self.text_sentence, self.label_sentence, \
+        self.label_general_sentence = self.split_by_sentence()
 
     def split_list(self, input_list, m):
         result = []

@@ -11,11 +11,18 @@ class BaselineLllama(torch.nn.Module):
                  no_pad,
                  general):
         super(BaselineLllama, self).__init__()
-        self.back_bone_model = AutoModel.from_pretrained(model_name)
+        if 'llama' in model_name.lower() or 'mistral' in model_name.lower():
+            self.back_bone_model = AutoModel.from_pretrained(model_name, torch_dtype=torch.float16)
+            self.llm_flag = True
+        else:
+            self.back_bone_model = AutoModel.from_pretrained(model_name)
+            self.llm_flag = False
+
         self.crf = torchcrf.CRF(num_tags=num_label,
                                 batch_first=True)
         self.linear = torch.nn.Linear(in_features=sim_dim,
                                       out_features=num_label)
+        self.activation = torch.nn.ReLU()
         self.drop_out = torch.nn.Dropout(p=drop_out)
         self.no_pad = no_pad
         self.general = general
@@ -69,8 +76,12 @@ class BaselineLllama(torch.nn.Module):
             attention_mask = attention_mask.unsqueeze(0)
             all_token_embedding = self.back_bone_model(input_ids=input_ids,
                                                        attention_mask=attention_mask)['last_hidden_state']
+            if self.llm_flag:
+                all_token_embedding = all_token_embedding.type(self.linear.dtype)
+
             assert len(label) == len(first_token_index[batch_index])
             first_token_embedding = all_token_embedding[:, first_token_index[batch_index], :]
+            first_token_embedding = self.activation(first_token_embedding)
             if goal == 'train':
                 ouput_linear = self.linear(self.drop_out(first_token_embedding))
             else:

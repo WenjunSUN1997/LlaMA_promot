@@ -45,7 +45,11 @@ class BaselineLinear(BaselineLllama):
             all_token_embedding = self.back_bone_model(input_ids=input_ids,
                                                        attention_mask=attention_mask)['last_hidden_state']
             assert len(label) == len(first_token_index[batch_index])
+            if self.llm_flag:
+                all_token_embedding = all_token_embedding.type(self.linear.weight.dtype)
+
             first_token_embedding = all_token_embedding[:, first_token_index[batch_index], :]
+            first_token_embedding = self.activation(first_token_embedding)
             if goal == 'train':
                 ouput_linear = self.linear(self.drop_out(first_token_embedding))
             else:

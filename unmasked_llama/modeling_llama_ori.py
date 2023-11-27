@@ -2,8 +2,8 @@
 
 from copy import deepcopy
 
-from transformers.models.llama.modeling_llama import *
 import torch
+from transformers.models.llama.modeling_llama import *
 from transformers.modeling_outputs import TokenClassifierOutput
 
 
@@ -466,17 +466,14 @@ class LlamaForTokenClassification(LlamaPreTrainedModel):
     LLAMA_START_DOCSTRING,
 )
 class UnmaskingLlamaForTokenClassification(LlamaPreTrainedModel):
-    def __init__(self,
-                 config,
-                 weight):
+    def __init__(self, config, weight=None):
         super().__init__(config)
         self.num_labels = config.num_labels
         self.model = UnmaskingLlamaModel(config)
-        self.weight = weight.type(self.model.dtype)
         self.dropout = nn.Dropout(0.1)
-        self.classifier = torch.nn.Linear(config.hidden_size, self.num_labels)
-        self.loss_weight = 0
-        self.loss_fct = CrossEntropyLoss(weight=self.weight)
+        self.classifier = nn.Linear(config.hidden_size, config.num_labels)
+        self.weight = weight.bfloat16() if weight !=None else None
+
         # Initialize weights and apply final processing
         self.post_init()
 
@@ -520,18 +517,26 @@ class UnmaskingLlamaForTokenClassification(LlamaPreTrainedModel):
             return_dict=return_dict,
         )
         sequence_output = outputs[0]
+
         sequence_output = self.dropout(sequence_output)
-        real_word_index = labels != -100
-        real_sequence_output = sequence_output[real_word_index]
-        # real_label = labels[real_word_index]
-        # logits = self.classifier(real_sequence_output)
-        # path = torch.max(logits, dim=-1).indices.cpu().numpy().tolist()
-        # if len(path) != len(real_label):
-        #     raise ValueError('label wrong')
-        #
-        # if labels is not None:
-        #     loss = self.loss_fct(logits.view(-1, self.num_labels), real_label.view(-1))
+        logits = self.classifier(sequence_output)
 
-        return {'real_sequence_output': real_sequence_output}
+        loss = None
+        if labels is not None:
+            if self.weight != None:
+                loss_fct = CrossEntropyLoss(weight=self.weight)
+            else:
+                loss_fct = CrossEntropyLoss()
 
+            loss = loss_fct(logits.view(-1, self.num_labels), labels.view(-1))
 
+        if not return_dict:
+            output = (logits,) + outputs[2:]
+            return ((loss,) + output) if loss is not None else output
+
+        return TokenClassifierOutput(
+            loss=loss,
+            logits=logits,
+            hidden_states=outputs.hidden_states,
+            attentions=outputs.attentions,
+        )

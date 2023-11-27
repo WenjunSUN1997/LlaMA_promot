@@ -12,8 +12,8 @@ class UnmaskedllamaBaseline(torch.nn.Module):
         super(UnmaskedllamaBaseline, self).__init__()
         self.back_bone_model = UnmaskingLlamaForTokenClassification.from_pretrained(model_name,
                                                                                     num_labels=num_label,
-                                                                                    torch_dtype=torch.float16)
-        self.back_bone_model.loss_weight = weight
+                                                                                    torch_dtype=torch.float16,
+                                                                                    weight=weight)
         peft_config = LoraConfig(task_type=TaskType.TOKEN_CLS,
                                  inference_mode=False,
                                  r=12,
@@ -21,6 +21,10 @@ class UnmaskedllamaBaseline(torch.nn.Module):
                                  lora_dropout=0.1)
         self.back_bone_model = get_peft_model(self.back_bone_model, peft_config)
         self.loss_func = loss_func
+        self.num_labels = num_label
+        self.linear = torch.nn.Linear(in_features=self.back_bone_model.config.hidden_size,
+                                      out_features=num_label,
+                                      bias=True)
         # self.back_bone_model.set_pooling('mean')
 
     def __forward__(self,
@@ -48,7 +52,13 @@ class UnmaskedllamaBaseline(torch.nn.Module):
         output_backbone = self.back_bone_model(input_ids=input_ids.unsqueeze(0),
                                                attention_mask=attention_mask.unsqueeze(0),
                                                labels=label_padded)
-        return output_backbone
+        real_sequence_output = output_backbone['real_sequence_output']
+        logits = self.linear(real_sequence_output)
+        loss = self.loss_func(logits.view(-1, self.num_labels), real_label.view(-1))
+        path = torch.max(logits, dim=-1).indices.cpu().numpy().tolist()
+
+        return {'loss': loss,
+                'path': path}
 
     def forward(self, data, goal):
         batch_size = data['input_ids'].shape[0]
